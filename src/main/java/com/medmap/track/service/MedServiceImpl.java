@@ -7,6 +7,8 @@ import com.medmap.track.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MedServiceImpl implements MedService {
 
@@ -24,5 +26,15 @@ public class MedServiceImpl implements MedService {
     @Override
     public Company saveCompany(Company company) {
         return companyRepository.save(company);
+    }
+
+    @Override
+    public List<Company> getAllCompany() {
+        return companyRepository.findAll();
+    }
+
+    @Override
+    public List<Medicine> getAllMedicine() {
+        return medicineRepository.findAll();
     }
 }
