@@ -1,7 +1,9 @@
 package com.medmap.track.service;
 
+import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
-import com.medmap.track.repository.MedRepository;
+import com.medmap.track.repository.CompanyRepository;
+import com.medmap.track.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +11,18 @@ import org.springframework.stereotype.Service;
 public class MedServiceImpl implements MedService {
 
     @Autowired
-    private MedRepository medRepository;
+    private MedicineRepository medicineRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Override
     public Medicine saveMedicine(Medicine medicine) {
-        return medRepository.save(medicine);
+        return medicineRepository.save(medicine);
+    }
+
+    @Override
+    public Company saveCompany(Company company) {
+        return companyRepository.save(company);
     }
 }

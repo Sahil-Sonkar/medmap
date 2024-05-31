@@ -1,5 +1,6 @@
 package com.medmap.track.controller;
 
+import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
 import com.medmap.track.service.MedService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,10 @@ public class MedController {
     @PostMapping("medicine")
     public ResponseEntity<Medicine> addMedicine(@RequestBody Medicine medicine) {
         return ResponseEntity.status(HttpStatus.CREATED).body(medService.saveMedicine(medicine));
+    }
+
+    @PostMapping("company")
+    public ResponseEntity<Company> addCompany(@RequestBody Company company) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(medService.saveCompany(company));
     }
 }
