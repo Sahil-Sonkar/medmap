@@ -2,6 +2,7 @@ package com.medmap.track.controller;
 
 import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
+import com.medmap.track.model.PurchaseOrder;
 import com.medmap.track.service.MedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,4 +38,8 @@ public class MedController {
         return ResponseEntity.status(HttpStatus.OK).body(medService.getAllMedicine());
     }
 
+    @PostMapping("purchaseOrder")
+    public ResponseEntity<PurchaseOrder> addPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(medService.createPurchaseOrder(purchaseOrder));
+    }
 }

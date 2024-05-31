@@ -25,5 +25,5 @@ public class Medicine {
 
     private Date expirationDate;
 
-    private String companyCRN;
+    private Integer companyCRN;
 }

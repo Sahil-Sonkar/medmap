@@ -1,7 +1,6 @@
 package com.medmap.track.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -9,11 +8,13 @@ import lombok.Data;
 @Table(name = "purchase_order")
 public class PurchaseOrder {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String buyerCrn;
+    private Integer buyerCrn;
 
-    private String sellerCrn;
+    private Integer sellerCrn;
 
     private String medicineName;
 
