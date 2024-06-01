@@ -7,6 +7,7 @@ import com.medmap.track.model.Medicine;
 import com.medmap.track.model.PurchaseOrder;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MedService {
 
@@ -19,4 +20,10 @@ public interface MedService {
     List<Medicine> getAllMedicine();
 
     PurchaseOrder createPurchaseOrder(PurchaseOrderDto purchaseOrder);
+
+    List<PurchaseOrder> getMedicineHistory(String medicineName);
+
+    Map<String, Map<String, Object>> getMedicineDistribution(String medicineName);
+
+    List<String> getFullMedicineHistory(String medicineName);
 }

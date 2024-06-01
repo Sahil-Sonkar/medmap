@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api/v1/medmap")
@@ -43,5 +44,15 @@ public class MedController {
     @PostMapping("purchaseOrder")
     public ResponseEntity<PurchaseOrder> addPurchaseOrder(@RequestBody PurchaseOrderDto purchaseOrderDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(medService.createPurchaseOrder(purchaseOrderDto));
+    }
+
+    @GetMapping("medicine/history/{medicineName}")
+    public ResponseEntity<Map<String, Map<String, Object>>> getMedicineDistribution(@PathVariable String medicineName) {
+        return ResponseEntity.status(HttpStatus.OK).body(medService.getMedicineDistribution(medicineName));
+    }
+
+    @GetMapping("medicine/fullHistory/{medicineName}")
+    public ResponseEntity<List<String>> getFullMedicineHistory(@PathVariable String medicineName) {
+        return ResponseEntity.status(HttpStatus.OK).body(medService.getFullMedicineHistory(medicineName));
     }
 }

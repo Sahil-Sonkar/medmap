@@ -8,13 +8,11 @@ import com.medmap.track.repository.CompanyRepository;
 import com.medmap.track.repository.InventoryRepository;
 import com.medmap.track.repository.MedicineRepository;
 import com.medmap.track.repository.PurchaseOrderRepository;
-import com.medmap.track.state.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MedServiceImpl implements MedService {
@@ -41,28 +39,6 @@ public class MedServiceImpl implements MedService {
 
         if (buyerRoleIndex != sellerRoleIndex + 1) {
             throw new BadRequestException("Invalid state transition from " + seller.getOrgRole() + " to " + buyer.getOrgRole());
-        }
-    }
-
-    private static void getContext(String buyerRole, PurchaseOrderContext context) {
-        switch (buyerRole) {
-            case "MANUFACTURER":
-                context.setState(new ManufacturerState());
-                break;
-            case "DISTRIBUTOR":
-                context.setState(new DistributorState());
-                break;
-            case "TRANSPORTER":
-                context.setState(new TransporterState());
-                break;
-            case "RETAILER":
-                context.setState(new RetailerState());
-                break;
-            case "CONSUMER":
-                context.setState(new ConsumerState());
-                break;
-            default:
-                throw new BadRequestException("Invalid role: " + buyerRole);
         }
     }
 
@@ -156,20 +132,76 @@ public class MedServiceImpl implements MedService {
         purchaseOrder.setMedicine(medicine);
         purchaseOrder.setQuantity(purchaseOrderDto.getQuantity());
 
-        PurchaseOrderContext context = new PurchaseOrderContext();
+        return purchaseOrderRepository.save(purchaseOrder);
+    }
 
-        // Set initial state based on order's current role
-//        getContext(purchaseOrder.getBuyer().getOrgRole(), context);
-//
-//        // Update order's role in the database based on new state
-        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
-//
-//        // Process order
-//
-//        context.printStatus();
-//        context.nextState();
-//        context.printStatus();
+    @Override
+    public List<PurchaseOrder> getMedicineHistory(String medicineName) {
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByMedicineName(medicineName);
+        if (purchaseOrders.isEmpty()) {
+            throw new BadRequestException("No purchase orders found for this medicine");
+        }
+        return purchaseOrders;
+    }
 
-        return purchaseOrderSaved;
+    @Override
+    public List<String> getFullMedicineHistory(String medicineName) {
+        List<PurchaseOrder> purchaseOrders = getMedicineHistory(medicineName);
+        List<String> history = new ArrayList<>();
+
+        for (PurchaseOrder order : purchaseOrders) {
+            Company buyer = companyRepository.findByCrn(order.getBuyer().getCrn())
+                    .orElseThrow(() -> new BadRequestException("Buyer not found: " + order.getBuyer().getCrn()));
+            Company seller = companyRepository.findByCrn(order.getSeller().getCrn())
+                    .orElseThrow(() -> new BadRequestException("Seller not found: " + order.getSeller().getCrn()));
+
+            history.add(String.format("Medicine '%s' moved from %s to %s with quantity %d",
+                    order.getMedicine().getName(),
+                    seller.getName(),
+                    buyer.getName(),
+                    order.getQuantity()));
+        }
+
+        return history;
+    }
+
+    public Map<String, Map<String, Object>> getMedicineDistribution(String medicineName) {
+        List<PurchaseOrder> purchaseOrders = getMedicineHistory(medicineName);
+        Map<String, Map<String, Object>> distribution = new LinkedHashMap<>();
+
+        // Initialize quantities
+        for (PurchaseOrder order : purchaseOrders) {
+            Company seller = companyRepository.findByCrn(order.getSeller().getCrn())
+                    .orElseThrow(() -> new BadRequestException("Seller not found: " + order.getSeller().getCrn()));
+            Company buyer = companyRepository.findByCrn(order.getBuyer().getCrn())
+                    .orElseThrow(() -> new BadRequestException("Buyer not found: " + order.getBuyer().getCrn()));
+
+            distribution.computeIfAbsent(seller.getOrgRole(), k -> {
+                Map<String, Object> details = new HashMap<>();
+                details.put("crn", seller.getCrn());
+                details.put("name", seller.getName());
+                details.put("location", seller.getLocation());
+                details.put("currentQuantity", 0);
+                return details;
+            });
+
+            distribution.computeIfAbsent(buyer.getOrgRole(), k -> {
+                Map<String, Object> details = new HashMap<>();
+                details.put("crn", buyer.getCrn());
+                details.put("name", buyer.getName());
+                details.put("location", buyer.getLocation());
+                details.put("currentQuantity", 0);
+                return details;
+            });
+
+            int sellerCurrentQuantity = (int) distribution.get(seller.getOrgRole()).get("currentQuantity");
+            int buyerCurrentQuantity = (int) distribution.get(buyer.getOrgRole()).get("currentQuantity");
+
+            // Update quantities
+            distribution.get(seller.getOrgRole()).put("currentQuantity", sellerCurrentQuantity - order.getQuantity());
+            distribution.get(buyer.getOrgRole()).put("currentQuantity", buyerCurrentQuantity + order.getQuantity());
+        }
+
+        return distribution;
     }
 }
