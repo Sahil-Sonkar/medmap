@@ -48,6 +48,28 @@ public class MedServiceImpl implements MedService {
         }
     }
 
+    private static void getContext(PurchaseOrder purchaseOrder, PurchaseOrderContext context) {
+        switch (purchaseOrder.getOrgRole()) {
+            case "MANUFACTURER":
+                context.setState(new ManufacturerState());
+                break;
+            case "DISTRIBUTOR":
+                context.setState(new DistributorState());
+                break;
+            case "TRANSPORTER":
+                context.setState(new TransporterState());
+                break;
+            case "RETAILER":
+                context.setState(new RetailerState());
+                break;
+            case "CONSUMER":
+                context.setState(new ConsumerState());
+                break;
+            default:
+                throw new BadRequestException("Invalid role: " + purchaseOrder.getOrgRole());
+        }
+    }
+
     @Override
     public Medicine saveMedicine(Medicine medicine) {
         Optional<Medicine> medicineOptional = medicineRepository.findByName(medicine.getName());
@@ -105,21 +127,6 @@ public class MedServiceImpl implements MedService {
         verifyRole(purchaseOrder.getOrgRole());
         verifyStateTransition(buyer, seller);
 
-//        PurchaseOrderContext context = new PurchaseOrderContext();
-//
-//        // Set initial state based on order's current role
-//        getContext(purchaseOrder, context);
-//
-//        // Update order's role in the database based on new state
-//        purchaseOrder.setOrgRole(context.getState().toString());
-//        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
-//
-//        // Process order
-//
-//        context.printStatus();
-//        context.nextState();
-//        context.printStatus();
-
         // Check if the seller has enough quantity
         Inventory sellerInventory = inventoryRepository.findByCompanyAndMedicine(seller, medicine)
                 .orElseThrow(() -> new BadRequestException("Seller does not have this medicine in inventory"));
@@ -145,30 +152,22 @@ public class MedServiceImpl implements MedService {
         buyerInventory.setQuantity(buyerInventory.getQuantity() + purchaseOrder.getQuantity());
         inventoryRepository.save(buyerInventory);
 
-        return purchaseOrderRepository.save(purchaseOrder);
+        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
+//        PurchaseOrderContext context = new PurchaseOrderContext();
+//
+//        // Set initial state based on order's current role
+//        getContext(purchaseOrder, context);
 
-//        return purchaseOrderSaved;
-    }
+          // Update order's role in the database based on new state
+//        purchaseOrder.setOrgRole(context.getState().toString());
+//        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
+//
+//        // Process order
+//
+//        context.printStatus();
+//        context.nextState();
+//        context.printStatus();
 
-    private static void getContext(PurchaseOrder purchaseOrder, PurchaseOrderContext context) {
-        switch (purchaseOrder.getOrgRole()) {
-            case "MANUFACTURER":
-                context.setState(new ManufacturerState());
-                break;
-            case "DISTRIBUTOR":
-                context.setState(new DistributorState());
-                break;
-            case "TRANSPORTER":
-                context.setState(new TransporterState());
-                break;
-            case "RETAILER":
-                context.setState(new RetailerState());
-                break;
-            case "CONSUMER":
-                context.setState(new ConsumerState());
-                break;
-            default:
-                throw new BadRequestException("Invalid role: " + purchaseOrder.getOrgRole());
-        }
+        return purchaseOrderSaved;
     }
 }
