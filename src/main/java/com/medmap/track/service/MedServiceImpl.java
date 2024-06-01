@@ -6,7 +6,6 @@ import com.medmap.track.repository.CompanyRepository;
 import com.medmap.track.repository.InventoryRepository;
 import com.medmap.track.repository.MedicineRepository;
 import com.medmap.track.repository.PurchaseOrderRepository;
-import com.medmap.track.state.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +32,6 @@ public class MedServiceImpl implements MedService {
             "MANUFACTURER", "DISTRIBUTOR", "TRANSPORTER", "RETAILER", "CONSUMER"
     );
 
-    private static void verifyRole(String role) {
-        if (!ROLE_SEQUENCE.contains(role)) {
-            throw new BadRequestException("Allowed roles are MANUFACTURER, DISTRIBUTOR, TRANSPORTER, RETAILER, and CONSUMER");
-        }
-    }
-
     private void verifyStateTransition(Company buyer, Company seller) {
         int buyerRoleIndex = ROLE_SEQUENCE.indexOf(buyer.getOrgRole());
         int sellerRoleIndex = ROLE_SEQUENCE.indexOf(seller.getOrgRole());
@@ -48,27 +41,27 @@ public class MedServiceImpl implements MedService {
         }
     }
 
-    private static void getContext(PurchaseOrder purchaseOrder, PurchaseOrderContext context) {
-        switch (purchaseOrder.getOrgRole()) {
-            case "MANUFACTURER":
-                context.setState(new ManufacturerState());
-                break;
-            case "DISTRIBUTOR":
-                context.setState(new DistributorState());
-                break;
-            case "TRANSPORTER":
-                context.setState(new TransporterState());
-                break;
-            case "RETAILER":
-                context.setState(new RetailerState());
-                break;
-            case "CONSUMER":
-                context.setState(new ConsumerState());
-                break;
-            default:
-                throw new BadRequestException("Invalid role: " + purchaseOrder.getOrgRole());
-        }
-    }
+//    private static void getContext(PurchaseOrder purchaseOrder, PurchaseOrderContext context) {
+//        switch (purchaseOrder.getOrgRole()) {
+//            case "MANUFACTURER":
+//                context.setState(new ManufacturerState());
+//                break;
+//            case "DISTRIBUTOR":
+//                context.setState(new DistributorState());
+//                break;
+//            case "TRANSPORTER":
+//                context.setState(new TransporterState());
+//                break;
+//            case "RETAILER":
+//                context.setState(new RetailerState());
+//                break;
+//            case "CONSUMER":
+//                context.setState(new ConsumerState());
+//                break;
+//            default:
+//                throw new BadRequestException("Invalid role: " + purchaseOrder.getOrgRole());
+//        }
+//    }
 
     @Override
     public Medicine saveMedicine(Medicine medicine) {
@@ -102,7 +95,9 @@ public class MedServiceImpl implements MedService {
         if (companyOptional.isPresent()) {
             throw new BadRequestException("Company with this name already present");
         }
-        verifyRole(company.getOrgRole());
+        if (!ROLE_SEQUENCE.contains(company.getOrgRole())) {
+            throw new BadRequestException("Allowed roles are MANUFACTURER, DISTRIBUTOR, TRANSPORTER, RETAILER and CONSUMER");
+        }
         return companyRepository.save(company);
     }
 
@@ -124,7 +119,6 @@ public class MedServiceImpl implements MedService {
                 .orElseThrow(() -> new BadRequestException("Seller with this crn not found"));
         Medicine medicine = medicineRepository.findByName(purchaseOrder.getMedicine().getName())
                 .orElseThrow(() -> new BadRequestException("Medicine with this name not present"));
-        verifyRole(purchaseOrder.getOrgRole());
         verifyStateTransition(buyer, seller);
 
         // Check if the seller has enough quantity

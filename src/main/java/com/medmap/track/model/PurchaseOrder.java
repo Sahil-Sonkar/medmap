@@ -25,6 +25,4 @@ public class PurchaseOrder {
     private Medicine medicine;
 
     private Integer quantity;
-
-    private String orgRole;
 }
