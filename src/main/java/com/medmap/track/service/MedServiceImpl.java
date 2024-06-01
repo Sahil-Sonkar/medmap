@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class MedServiceImpl implements MedService {
@@ -40,12 +39,7 @@ public class MedServiceImpl implements MedService {
         }
     }
 
-    private void verifyStateTransition(PurchaseOrder order) {
-        Company buyer = companyRepository.findById(order.getBuyer().getCrn())
-                .orElseThrow(() -> new BadRequestException("Buyer not found"));
-        Company seller = companyRepository.findById(order.getSeller().getCrn())
-                .orElseThrow(() -> new BadRequestException("Seller not found"));
-
+    private void verifyStateTransition(Company buyer, Company seller) {
         int buyerRoleIndex = ROLE_SEQUENCE.indexOf(buyer.getOrgRole());
         int sellerRoleIndex = ROLE_SEQUENCE.indexOf(seller.getOrgRole());
 
@@ -102,23 +96,14 @@ public class MedServiceImpl implements MedService {
 
     @Override
     public PurchaseOrder createPurchaseOrder(PurchaseOrder purchaseOrder) {
-        Company buyer = purchaseOrder.getBuyer();
-        Optional<Company> buyerOptional = companyRepository.findByCrn(buyer.getCrn());
-        if (buyerOptional.isEmpty()) {
-            throw new BadRequestException("Buyer with this crn is not present in db");
-        }
-        Company seller = purchaseOrder.getSeller();
-        Optional<Company> sellerOptional = companyRepository.findByCrn(seller.getCrn());
-        if (sellerOptional.isEmpty()) {
-            throw new BadRequestException("Seller with this crn is not present in db");
-        }
-        Medicine medicine = purchaseOrder.getMedicine();
-        Optional<Medicine> medicineOptional = medicineRepository.findByName(medicine.getName());
-        if (medicineOptional.isEmpty()) {
-            throw new BadRequestException("Medicine with this name not present");
-        }
+        Company buyer = companyRepository.findByCrn(purchaseOrder.getBuyer().getCrn())
+                .orElseThrow(() -> new BadRequestException("Buyer with this crn not found"));
+        Company seller = companyRepository.findByCrn(purchaseOrder.getSeller().getCrn())
+                .orElseThrow(() -> new BadRequestException("Seller with this crn not found"));
+        Medicine medicine = medicineRepository.findByName(purchaseOrder.getMedicine().getName())
+                .orElseThrow(() -> new BadRequestException("Medicine with this name not present"));
         verifyRole(purchaseOrder.getOrgRole());
-        verifyStateTransition(purchaseOrder);
+        verifyStateTransition(buyer, seller);
 
 //        PurchaseOrderContext context = new PurchaseOrderContext();
 //
