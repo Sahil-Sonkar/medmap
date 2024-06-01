@@ -169,6 +169,17 @@ public class MedServiceImpl implements MedService {
         List<PurchaseOrder> purchaseOrders = getMedicineHistory(medicineName);
         Map<String, Map<String, Object>> distribution = new LinkedHashMap<>();
 
+        // Initialize the manufacturer's quantity with the initial quantity of the medicine
+        Medicine medicine = medicineRepository.findByName(medicineName)
+                .orElseThrow(() -> new BadRequestException("Medicine with this name not present"));
+        Company manufacturer = medicine.getManufacturer();
+        distribution.put("MANUFACTURER", new HashMap<>());
+        distribution.get("MANUFACTURER").put("crn", manufacturer.getCrn());
+        distribution.get("MANUFACTURER").put("name", manufacturer.getName());
+        distribution.get("MANUFACTURER").put("location", manufacturer.getLocation());
+        distribution.get("MANUFACTURER").put("currentQuantity", medicine.getInitialQuantity());
+
+
         // Initialize quantities
         for (PurchaseOrder order : purchaseOrders) {
             Company seller = companyRepository.findByCrn(order.getSeller().getCrn())
