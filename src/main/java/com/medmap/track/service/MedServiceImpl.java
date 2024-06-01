@@ -159,16 +159,16 @@ public class MedServiceImpl implements MedService {
         PurchaseOrderContext context = new PurchaseOrderContext();
 
         // Set initial state based on order's current role
-        getContext(purchaseOrder.getBuyer().getOrgRole(), context);
-
-        // Update order's role in the database based on new state
+//        getContext(purchaseOrder.getBuyer().getOrgRole(), context);
+//
+//        // Update order's role in the database based on new state
         PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
-
-        // Process order
-
-        context.printStatus();
-        context.nextState();
-        context.printStatus();
+//
+//        // Process order
+//
+//        context.printStatus();
+//        context.nextState();
+//        context.printStatus();
 
         return purchaseOrderSaved;
     }
