@@ -1,6 +1,7 @@
 package com.medmap.track.controller;
 
 import com.medmap.track.dto.MedicineDto;
+import com.medmap.track.dto.PurchaseOrderDto;
 import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
 import com.medmap.track.model.PurchaseOrder;
@@ -40,7 +41,7 @@ public class MedController {
     }
 
     @PostMapping("purchaseOrder")
-    public ResponseEntity<PurchaseOrder> addPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(medService.createPurchaseOrder(purchaseOrder));
+    public ResponseEntity<PurchaseOrder> addPurchaseOrder(@RequestBody PurchaseOrderDto purchaseOrderDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(medService.createPurchaseOrder(purchaseOrderDto));
     }
 }

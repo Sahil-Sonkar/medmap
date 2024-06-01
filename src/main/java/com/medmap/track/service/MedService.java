@@ -1,6 +1,7 @@
 package com.medmap.track.service;
 
 import com.medmap.track.dto.MedicineDto;
+import com.medmap.track.dto.PurchaseOrderDto;
 import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
 import com.medmap.track.model.PurchaseOrder;
@@ -17,5 +18,5 @@ public interface MedService {
 
     List<Medicine> getAllMedicine();
 
-    PurchaseOrder createPurchaseOrder(PurchaseOrder purchaseOrder);
+    PurchaseOrder createPurchaseOrder(PurchaseOrderDto purchaseOrder);
 }

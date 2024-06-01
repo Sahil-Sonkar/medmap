@@ -1,6 +1,7 @@
 package com.medmap.track.service;
 
 import com.medmap.track.dto.MedicineDto;
+import com.medmap.track.dto.PurchaseOrderDto;
 import com.medmap.track.exception.BadRequestException;
 import com.medmap.track.model.*;
 import com.medmap.track.repository.CompanyRepository;
@@ -114,12 +115,12 @@ public class MedServiceImpl implements MedService {
     }
 
     @Override
-    public PurchaseOrder createPurchaseOrder(PurchaseOrder purchaseOrder) {
-        Company buyer = companyRepository.findByCrn(purchaseOrder.getBuyer().getCrn())
+    public PurchaseOrder createPurchaseOrder(PurchaseOrderDto purchaseOrderDto) {
+        Company buyer = companyRepository.findByCrn(purchaseOrderDto.getBuyerCrn())
                 .orElseThrow(() -> new BadRequestException("Buyer with this crn not found"));
-        Company seller = companyRepository.findByCrn(purchaseOrder.getSeller().getCrn())
+        Company seller = companyRepository.findByCrn(purchaseOrderDto.getSellerCrn())
                 .orElseThrow(() -> new BadRequestException("Seller with this crn not found"));
-        Medicine medicine = medicineRepository.findByName(purchaseOrder.getMedicine().getName())
+        Medicine medicine = medicineRepository.findByName(purchaseOrderDto.getMedicineName())
                 .orElseThrow(() -> new BadRequestException("Medicine with this name not present"));
         verifyStateTransition(buyer, seller);
 
@@ -127,12 +128,12 @@ public class MedServiceImpl implements MedService {
         Inventory sellerInventory = inventoryRepository.findByCompanyAndMedicine(seller, medicine)
                 .orElseThrow(() -> new BadRequestException("Seller does not have this medicine in inventory"));
 
-        if (sellerInventory.getQuantity() < purchaseOrder.getQuantity()) {
+        if (sellerInventory.getQuantity() < purchaseOrderDto.getQuantity()) {
             throw new BadRequestException("Seller does not have enough quantity of the medicine");
         }
 
         // Deduct the quantity from the seller's inventory
-        sellerInventory.setQuantity(sellerInventory.getQuantity() - purchaseOrder.getQuantity());
+        sellerInventory.setQuantity(sellerInventory.getQuantity() - purchaseOrderDto.getQuantity());
         inventoryRepository.save(sellerInventory);
 
         // Add the quantity to the buyer's inventory
@@ -145,8 +146,14 @@ public class MedServiceImpl implements MedService {
                     return newInventory;
                 });
 
-        buyerInventory.setQuantity(buyerInventory.getQuantity() + purchaseOrder.getQuantity());
+        buyerInventory.setQuantity(buyerInventory.getQuantity() + purchaseOrderDto.getQuantity());
         inventoryRepository.save(buyerInventory);
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setBuyer(buyer);
+        purchaseOrder.setSeller(seller);
+        purchaseOrder.setMedicine(medicine);
+        purchaseOrder.setQuantity(purchaseOrderDto.getQuantity());
 
         PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
 //        PurchaseOrderContext context = new PurchaseOrderContext();
