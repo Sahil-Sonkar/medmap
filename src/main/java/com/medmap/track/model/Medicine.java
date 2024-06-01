@@ -1,10 +1,6 @@
 package com.medmap.track.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
@@ -25,5 +21,9 @@ public class Medicine {
 
     private Date expirationDate;
 
-    private Integer companyCRN;
+    @ManyToOne
+    @JoinColumn(name = "company_crn", nullable = false)
+    private Company manufacturer;
+
+    private Integer initialQuantity;
 }

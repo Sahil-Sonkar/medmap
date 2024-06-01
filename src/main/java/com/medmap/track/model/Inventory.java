@@ -5,26 +5,20 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "purchase_order")
-public class PurchaseOrder {
+@Table(name = "inventory")
+public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_crn", nullable = false)
-    private Company buyer;
-
-    @ManyToOne
-    @JoinColumn(name = "seller_crn", nullable = false)
-    private Company seller;
+    @JoinColumn(name = "company_crn", nullable = false)
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "medicine_id", nullable = false)
     private Medicine medicine;
 
     private Integer quantity;
-
-    private String orgRole;
 }
