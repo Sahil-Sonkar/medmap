@@ -13,11 +13,11 @@ public class Inventory {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "companyCrn", nullable = false)
+    @JoinColumn(name = "company_crn", nullable = false)
     private Company company;
 
     @ManyToOne
-    @JoinColumn(name = "medicineId", nullable = false)
+    @JoinColumn(name = "medicine_id", nullable = false)
     private Medicine medicine;
 
     private Integer quantity;

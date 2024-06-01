@@ -16,8 +16,6 @@ public class PurchaseOrderHistory {
 
     private Integer currOrg;
 
-    @ManyToOne
-    @JoinColumn(name = "medicine_id", nullable = false)
     private Integer purchaseOrderId;
 
 }

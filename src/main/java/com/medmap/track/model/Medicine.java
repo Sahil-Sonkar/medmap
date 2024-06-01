@@ -17,13 +17,16 @@ public class Medicine {
 
     private String name;
 
+    @Column(name = "manufacture_date")
     private Date manufactureDate;
 
+    @Column(name = "expiration_date")
     private Date expirationDate;
 
     @ManyToOne
-    @JoinColumn(name = "manufacturerCrn", nullable = false)
+    @JoinColumn(name = "manufacturer_crn", nullable = false)
     private Company manufacturer;
 
+    @Column(name = "initial_quantity")
     private Integer initialQuantity;
 }

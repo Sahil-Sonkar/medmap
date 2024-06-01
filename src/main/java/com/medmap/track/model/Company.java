@@ -16,5 +16,6 @@ public class Company {
 
     private String location;
 
+    @Column(name = "org_role")
     private String orgRole;
 }
