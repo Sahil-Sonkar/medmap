@@ -13,15 +13,15 @@ public class PurchaseOrder {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_crn", nullable = false)
+    @JoinColumn(name = "buyerCrn", nullable = false)
     private Company buyer;
 
     @ManyToOne
-    @JoinColumn(name = "seller_crn", nullable = false)
+    @JoinColumn(name = "sellerCrn", nullable = false)
     private Company seller;
 
     @ManyToOne
-    @JoinColumn(name = "medicine_id", nullable = false)
+    @JoinColumn(name = "medicineId", nullable = false)
     private Medicine medicine;
 
     private Integer quantity;

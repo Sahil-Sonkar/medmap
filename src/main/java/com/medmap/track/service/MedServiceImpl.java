@@ -8,6 +8,7 @@ import com.medmap.track.repository.CompanyRepository;
 import com.medmap.track.repository.InventoryRepository;
 import com.medmap.track.repository.MedicineRepository;
 import com.medmap.track.repository.PurchaseOrderRepository;
+import com.medmap.track.state.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,27 +44,27 @@ public class MedServiceImpl implements MedService {
         }
     }
 
-//    private static void getContext(PurchaseOrder purchaseOrder, PurchaseOrderContext context) {
-//        switch (purchaseOrder.getOrgRole()) {
-//            case "MANUFACTURER":
-//                context.setState(new ManufacturerState());
-//                break;
-//            case "DISTRIBUTOR":
-//                context.setState(new DistributorState());
-//                break;
-//            case "TRANSPORTER":
-//                context.setState(new TransporterState());
-//                break;
-//            case "RETAILER":
-//                context.setState(new RetailerState());
-//                break;
-//            case "CONSUMER":
-//                context.setState(new ConsumerState());
-//                break;
-//            default:
-//                throw new BadRequestException("Invalid role: " + purchaseOrder.getOrgRole());
-//        }
-//    }
+    private static void getContext(String buyerRole, PurchaseOrderContext context) {
+        switch (buyerRole) {
+            case "MANUFACTURER":
+                context.setState(new ManufacturerState());
+                break;
+            case "DISTRIBUTOR":
+                context.setState(new DistributorState());
+                break;
+            case "TRANSPORTER":
+                context.setState(new TransporterState());
+                break;
+            case "RETAILER":
+                context.setState(new RetailerState());
+                break;
+            case "CONSUMER":
+                context.setState(new ConsumerState());
+                break;
+            default:
+                throw new BadRequestException("Invalid role: " + buyerRole);
+        }
+    }
 
     @Override
     public Medicine saveMedicine(MedicineDto medicineDto) {
@@ -155,21 +156,19 @@ public class MedServiceImpl implements MedService {
         purchaseOrder.setMedicine(medicine);
         purchaseOrder.setQuantity(purchaseOrderDto.getQuantity());
 
-        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
-//        PurchaseOrderContext context = new PurchaseOrderContext();
-//
-//        // Set initial state based on order's current role
-//        getContext(purchaseOrder, context);
+        PurchaseOrderContext context = new PurchaseOrderContext();
 
-          // Update order's role in the database based on new state
-//        purchaseOrder.setOrgRole(context.getState().toString());
-//        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
-//
-//        // Process order
-//
-//        context.printStatus();
-//        context.nextState();
-//        context.printStatus();
+        // Set initial state based on order's current role
+        getContext(purchaseOrder.getBuyer().getOrgRole(), context);
+
+        // Update order's role in the database based on new state
+        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
+
+        // Process order
+
+        context.printStatus();
+        context.nextState();
+        context.printStatus();
 
         return purchaseOrderSaved;
     }

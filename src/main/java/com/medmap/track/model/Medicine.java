@@ -22,7 +22,7 @@ public class Medicine {
     private Date expirationDate;
 
     @ManyToOne
-    @JoinColumn(name = "company_crn", nullable = false)
+    @JoinColumn(name = "manufacturerCrn", nullable = false)
     private Company manufacturer;
 
     private Integer initialQuantity;
