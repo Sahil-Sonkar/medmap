@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "abb361c5-bf0c-4674-adb2-e553275a4878",
+		"name": "Medmap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8579057"
+	},
+	"item": [
+		{
+			"name": "add medicine",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Paracetamol\",\r\n    \"manufactureDate\": \"2022-01-23\",\r\n    \"expirationDate\": \"2024-11-20\",\r\n    \"manufacturerCrn\": \"1\",\r\n    \"initialQuantity\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all medicine",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add purchase order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerCrn\": \"6\",\r\n    \"sellerCrn\": \"5\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"35\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/purchaseOrder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"purchaseOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sun Pharma\",\r\n    \"location\": \"bangalore\",\r\n    \"orgRole\": \"MANUFACTURER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all companies",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get medicine history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine/history/Paracetamol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine",
+						"history",
+						"Paracetamol"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get full medicine history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine/fullHistory/Paracetamol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine",
+						"fullHistory",
+						"Paracetamol"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
