@@ -1,5 +1,6 @@
 package com.medmap.track.controller;
 
+import com.medmap.track.dto.MedicineDto;
 import com.medmap.track.model.Company;
 import com.medmap.track.model.Medicine;
 import com.medmap.track.model.PurchaseOrder;
@@ -19,8 +20,8 @@ public class MedController {
     private MedService medService;
 
     @PostMapping("medicine")
-    public ResponseEntity<Medicine> addMedicine(@RequestBody Medicine medicine) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(medService.saveMedicine(medicine));
+    public ResponseEntity<Medicine> addMedicine(@RequestBody MedicineDto medicineDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(medService.saveMedicine(medicineDto));
     }
 
     @PostMapping("company")

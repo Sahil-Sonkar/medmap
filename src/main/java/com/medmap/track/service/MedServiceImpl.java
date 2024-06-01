@@ -1,5 +1,6 @@
 package com.medmap.track.service;
 
+import com.medmap.track.dto.MedicineDto;
 import com.medmap.track.exception.BadRequestException;
 import com.medmap.track.model.*;
 import com.medmap.track.repository.CompanyRepository;
@@ -64,24 +65,25 @@ public class MedServiceImpl implements MedService {
 //    }
 
     @Override
-    public Medicine saveMedicine(Medicine medicine) {
-        Optional<Medicine> medicineOptional = medicineRepository.findByName(medicine.getName());
-        if (medicineOptional.isPresent()) {
-            throw new BadRequestException("Medicine with this name already present");
-        }
-        Optional<Company> companyOptional = companyRepository.findByCrn(medicine.getManufacturer().getCrn());
-        if (companyOptional.isEmpty()) {
-            throw new BadRequestException("Company with this crn not present");
-        }
-        Company company = companyOptional.get();
-        if (!StringUtils.equals(company.getOrgRole(), "MANUFACTURER")) {
+    public Medicine saveMedicine(MedicineDto medicineDto) {
+        medicineRepository.findByName(medicineDto.getName())
+                .ifPresent(medicine -> {throw new BadRequestException("Medicine with this name already present");});
+        Company manufacturer = companyRepository.findByCrn(medicineDto.getManufacturerCrn())
+                .orElseThrow(() -> new BadRequestException("Company with this crn not present"));
+        if (!StringUtils.equals(manufacturer.getOrgRole(), "MANUFACTURER")) {
             throw new BadRequestException("Only manufacturer can add medicine");
         }
+        Medicine medicine = new Medicine();
+        medicine.setName(medicineDto.getName());
+        medicine.setManufacturer(manufacturer);
+        medicine.setManufactureDate(medicineDto.getManufactureDate());
+        medicine.setExpirationDate(medicineDto.getExpirationDate());
+        medicine.setInitialQuantity(medicineDto.getInitialQuantity());
         Medicine savedMedicine = medicineRepository.save(medicine);
 
         // Add medicine to the manufacturer's inventory
         Inventory inventory = new Inventory();
-        inventory.setCompany(company);
+        inventory.setCompany(manufacturer);
         inventory.setMedicine(savedMedicine);
         inventory.setQuantity(medicine.getInitialQuantity());
         inventoryRepository.save(inventory);
