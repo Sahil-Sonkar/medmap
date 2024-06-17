@@ -40,7 +40,7 @@ GRANT ALL PRIVILEGES ON medmapdb.* TO 'root'@'localhost' IDENTIFIED BY 'password
 FLUSH PRIVILEGES;
 ```
 
-##3 Build and Run the Spring Boot Application
+### Build and Run the Spring Boot Application
 
    1. Build the project: Go to Build > Build Project.
    2. Run the application: Go to Run > Run 'MedmapApplication'.
