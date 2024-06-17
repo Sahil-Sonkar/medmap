@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Paracetamol\",\r\n    \"manufactureDate\": \"2022-01-23\",\r\n    \"expirationDate\": \"2024-11-20\",\r\n    \"companyCRN\": \"1\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Paracetamol\",\r\n    \"manufactureDate\": \"2022-01-23\",\r\n    \"expirationDate\": \"2024-11-20\",\r\n    \"manufacturerCrn\": \"1\",\r\n    \"initialQuantity\": 500\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -60,13 +60,13 @@
 			"response": []
 		},
 		{
-			"name": "add purchase order",
+			"name": "create purchaseOrder by Distributor",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"buyerCrn\": \"3\",\r\n    \"sellerCrn\": \"1\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"500\"\r\n}",
+					"raw": "{\r\n    \"buyerCrn\": \"2\",\r\n    \"sellerCrn\": \"1\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"45\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,13 +91,230 @@
 			"response": []
 		},
 		{
-			"name": "add company",
+			"name": "create purchaseOrder by Transporter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerCrn\": \"3\",\r\n    \"sellerCrn\": \"2\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"40\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/purchaseOrder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"purchaseOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create purchaseOrder by Retailer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerCrn\": \"4\",\r\n    \"sellerCrn\": \"3\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"35\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/purchaseOrder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"purchaseOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create purchaseOrder by Consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerCrn\": \"5\",\r\n    \"sellerCrn\": \"4\",\r\n    \"medicineName\": \"Paracetamol\",\r\n    \"quantity\": \"30\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/purchaseOrder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"purchaseOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company distributor",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Blue Dart\",\r\n    \"location\": \"chennai\",\r\n    \"orgRole\": \"DISTRIBUTOR\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company retailer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Apollo\",\r\n    \"location\": \"kolkata\",\r\n    \"orgRole\": \"RETAILER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sahil\",\r\n    \"location\": \"pune\",\r\n    \"orgRole\": \"CONSUMER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company manufacturer",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"name\": \"Sun Pharma\",\r\n    \"location\": \"bangalore\",\r\n    \"orgRole\": \"MANUFACTURER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/company",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add company transporter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Ekart\",\r\n    \"location\": \"delhi\",\r\n    \"orgRole\": \"TRANSPORTER\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -150,6 +367,78 @@
 						"v1",
 						"medmap",
 						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get medicine history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine/history/Paracetamol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine",
+						"history",
+						"Paracetamol"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get full medicine history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/medmap/medicine/fullHistory/Paracetamol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"medmap",
+						"medicine",
+						"fullHistory",
+						"Paracetamol"
 					]
 				}
 			},

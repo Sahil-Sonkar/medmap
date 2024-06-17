@@ -44,26 +44,40 @@ public class MedServiceImpl implements MedService {
 
     @Override
     public Medicine saveMedicine(MedicineDto medicineDto) {
-        medicineRepository.findByName(medicineDto.getName())
-                .ifPresent(medicine -> {throw new BadRequestException("Medicine with this name already present");});
+        Optional<Medicine> medicineOptional = medicineRepository.findByName(medicineDto.getName());
         Company manufacturer = companyRepository.findByCrn(medicineDto.getManufacturerCrn())
                 .orElseThrow(() -> new BadRequestException("Company with this crn not present"));
         if (!StringUtils.equals(manufacturer.getOrgRole(), "MANUFACTURER")) {
             throw new BadRequestException("Only manufacturer can add medicine");
         }
-        Medicine medicine = new Medicine();
+        Medicine medicine;
+        if (medicineOptional.isPresent()) {
+            medicine = medicineOptional.get();
+            medicine.setInitialQuantity(medicine.getInitialQuantity() + medicineDto.getInitialQuantity());
+        } else {
+            medicine = new Medicine();
+            medicine.setInitialQuantity(medicineDto.getInitialQuantity());
+        }
         medicine.setName(medicineDto.getName());
         medicine.setManufacturer(manufacturer);
         medicine.setManufactureDate(medicineDto.getManufactureDate());
         medicine.setExpirationDate(medicineDto.getExpirationDate());
-        medicine.setInitialQuantity(medicineDto.getInitialQuantity());
+
         Medicine savedMedicine = medicineRepository.save(medicine);
 
         // Add medicine to the manufacturer's inventory
-        Inventory inventory = new Inventory();
+        Optional<Inventory> inventoryOptional = inventoryRepository.findByCompanyAndMedicine(manufacturer, medicine);
+        Inventory inventory;
+        if (inventoryOptional.isPresent()) {
+            inventory = inventoryOptional.get();
+            inventory.setQuantity(inventory.getQuantity() + medicine.getInitialQuantity());
+        } else {
+            inventory = new Inventory();
+            inventory.setQuantity(medicine.getInitialQuantity());
+        }
         inventory.setCompany(manufacturer);
         inventory.setMedicine(savedMedicine);
-        inventory.setQuantity(medicine.getInitialQuantity());
+
         inventoryRepository.save(inventory);
 
         return savedMedicine;
